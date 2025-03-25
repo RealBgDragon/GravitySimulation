@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <glad/glad.h> 
+#include <iostream>
 
 class WindowManager
 {
@@ -17,9 +18,15 @@ public:
 	void render();
 	void clean();
 
-	void renderCircle();
+	void setupTriangle();
+	void renderTriangle();
+
+	void setupCircle(int segments, float r);
+	void renderCircle(int segments, float r);
 
 	bool running() { return isRunning; }
+
+	void checkShaderCompileErrors(unsigned int shader, std::string type);
 
 private:
 
@@ -27,6 +34,14 @@ private:
 
 	int width;
 	int height;
+
+	GLuint triangleVAO;
+	GLuint triangleVBO;
+	
+	GLuint circleVAO;
+	GLuint circleVBO;
+	
+	GLuint shaderProgram;
 
 	SDL_Window* window;
 	SDL_GLContext glContext;
