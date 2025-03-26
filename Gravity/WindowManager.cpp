@@ -48,12 +48,20 @@ void WindowManager::init(const char* title, int xpos, int ypos, int width, int h
 		std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
 		setupTriangle();
+
+
+		circleObjects.emplace_back(CircleObjects(this));
+		circleObjects.back().init(60, 0.25f, 0, 0, 100);
+
+		circleObjects.emplace_back(CircleObjects(this));
+		circleObjects.back().init(60, 0.25f, 1.0f, 1.0f, 100);
+
+
 	}
 	else {
 		std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
 		isRunning = false;
 	}
-
 
 }
 
@@ -65,70 +73,79 @@ void WindowManager::handleEvents() {
 }
 
 void WindowManager::update() {
+	float deltaTime = 0.008f;  // Placeholder for 60 FPS (use proper time calculation)
+	gravitySim(deltaTime);
+	for (CircleObjects& circle : circleObjects) {
+		circle.update(deltaTime);
+	}
+}
 
+void WindowManager::gravitySim(float deltaTime) {
+	for (CircleObjects& circleObjects : circleObjects) {  // Iterates directly over each projectile
+
+		circleObjects.velocity += circleObjects.acceleration * deltaTime;
+	}
 }
 
 void WindowManager::render() {
 	glClearColor(0, 0, 0, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	renderCircle(60, 0.5f);
+	for (CircleObjects& circleObjects : circleObjects) {  // Iterates directly over each projectile
+		circleObjects.draw();
+	}
+	//renderCircle(60, 0.25f, 0.0f, 0.0f);
 
 	SDL_GL_SwapWindow(window);
 }
 
-void WindowManager::setupCircle(int segments, float r) {
+void WindowManager::setupCircle(int segments, float r, float centerX, float centerY, GLuint& circleVAO, GLuint& circleVBO, bool initialized) {
+	
+	if (!initialized) {
+		glGenVertexArrays(1, &circleVAO);
+		glGenBuffers(1, &circleVBO);
+	}
+
+	glBindVertexArray(circleVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, circleVBO);
 
 	std::vector<float> vertices;
-
-	vertices.push_back(0.0f); // x
-	vertices.push_back(0.0f); // y
-	vertices.push_back(0.0f); // z
-	vertices.push_back(1.0f); // red
-	vertices.push_back(1.0f); // green
+	vertices.push_back(centerX);
+	vertices.push_back(centerY);
+	vertices.push_back(0.0f);
+	vertices.push_back(1.0f);
+	vertices.push_back(1.0f);
 	vertices.push_back(1.0f);
 
 	for (int i = 0; i <= segments; i++) {
 		float theta = 2.0f * 3.1415926f * float(i) / float(segments);
-		float x = r * cosf(theta);
-		float y = r * sinf(theta);
+		float x = centerX + r * cosf(theta);
+		float y = centerY + r * sinf(theta);
 
-		// z coordinate remains 0 for 2D
 		vertices.push_back(x);
 		vertices.push_back(y);
 		vertices.push_back(0.0f);
-		// Set the color for the outer vertices:
-		vertices.push_back(0.0f);
 		vertices.push_back(1.0f);
-		vertices.push_back(0.0f);
+		vertices.push_back(1.0f);
+		vertices.push_back(1.0f);
 	}
 
-	glGenVertexArrays(1, &circleVAO);
-	glGenBuffers(1, &circleVBO);
-
-	glBindVertexArray(circleVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, circleVBO);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
 }
 
-void WindowManager::renderCircle(int segments, float r) {
-	setupCircle(segments, r);
+void WindowManager::renderCircle(int segments, float r, float centerX, float centerY, GLuint circleVAO) {
 	glUseProgram(shaderProgram);
 	glBindVertexArray(circleVAO);
-
 	int vertexCount = segments + 1 + 1;
 	glDrawArrays(GL_TRIANGLE_FAN, 0, vertexCount);
-
 	glBindVertexArray(0);
 }
 
@@ -214,9 +231,13 @@ void WindowManager::renderTriangle() {
 }
 
 void WindowManager::clean() {
+	// Delete OpenGL Buffers
 	glDeleteVertexArrays(1, &triangleVAO);
 	glDeleteBuffers(1, &triangleVBO);
+
 	glDeleteProgram(shaderProgram);
+
+	// Clean SDL
 	SDL_GL_DeleteContext(glContext);
 	SDL_DestroyWindow(window);
 	SDL_Quit();

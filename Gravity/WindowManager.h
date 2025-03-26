@@ -2,6 +2,10 @@
 #include <SDL.h>
 #include <glad/glad.h> 
 #include <iostream>
+#include <vector>
+#include "CircleObjects.h"
+
+class CircleObjects;
 
 class WindowManager
 {
@@ -21,14 +25,18 @@ public:
 	void setupTriangle();
 	void renderTriangle();
 
-	void setupCircle(int segments, float r);
-	void renderCircle(int segments, float r);
+	void setupCircle(int segments, float r, float centerX, float centerY, GLuint& circleVAO, GLuint& circleVBO, bool initialized);
+	void renderCircle(int segments, float r, float centerX, float centerY, GLuint circleVAO);
+
+	void gravitySim(float deltaTime);
 
 	bool running() { return isRunning; }
 
 	void checkShaderCompileErrors(unsigned int shader, std::string type);
 
 private:
+
+	std::vector<CircleObjects> circleObjects;
 
 	bool isRunning = true;
 
@@ -37,9 +45,6 @@ private:
 
 	GLuint triangleVAO;
 	GLuint triangleVBO;
-	
-	GLuint circleVAO;
-	GLuint circleVBO;
 	
 	GLuint shaderProgram;
 
