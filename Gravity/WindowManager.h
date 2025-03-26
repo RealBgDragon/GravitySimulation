@@ -11,8 +11,6 @@ class WindowManager
 {
 public:
 
-	const float G = 6.6743 * (pow(10, -11));
-
 	WindowManager();
 
 	~WindowManager();
@@ -37,6 +35,8 @@ public:
 	void checkShaderCompileErrors(unsigned int shader, std::string type);
 
 private:
+
+	const float G = 6.6743 * (pow(10, -11));
 
 	std::vector<CircleObjects> circleObjects;
 

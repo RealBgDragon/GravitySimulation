@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
 class WindowManager;
@@ -14,10 +15,10 @@ public:
 	CircleObjects(WindowManager* windowManager);
 	~CircleObjects();
 
-	void init(int segments, float r, float centerX, float centerY, double mass);
+	void init(int segments, float r, float centerX, float centerY, double mass, double xAcceleration, double yAcceleration);
 
-	int getCenterX() { return centerX; }
-	int getCenterY() { return centerY; }
+	float getCenterX() { return centerX; }
+	float getCenterY() { return centerY; }
 
 	void setCenterX(float newCenterX) { centerX = newCenterX; }
 	void setCenterY(float newCenterY) { centerY = newCenterY; }
@@ -26,11 +27,19 @@ public:
 
 	void draw();
 
-	void update(float deltaTime);
+	void update(float deltaTime, std::vector<CircleObjects>& allObjects);
 
-	glm::vec2 velocity = glm::vec2(0.0f, 0.0f);
-	glm::vec2 acceleration = glm::vec2(0.0f, -9.81f);
+	void applyGravity(CircleObjects& other);
+
 private:
+
+	const double G = 6.6743 * (pow(10, -11));
+
+	double xAcceleration;
+	double yAcceleration;
+
+	glm::dvec2 velocity = glm::dvec2(0.0f, 0.0f);
+	glm::dvec2 acceleration = glm::dvec2(0.0f, 0.0f); // y = -9.81f for gravity
 
 	int segments;
 	float r;

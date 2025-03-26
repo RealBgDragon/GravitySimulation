@@ -50,11 +50,18 @@ void WindowManager::init(const char* title, int xpos, int ypos, int width, int h
 		setupTriangle();
 
 
-		circleObjects.emplace_back(CircleObjects(this));
-		circleObjects.back().init(60, 0.1f, 0, 0, 100);
+		//double weight = 8.1 * pow(10, 10); // pow 19 for the moon
+		double weight = 1e5;
 
-		/*circleObjects.emplace_back(CircleObjects(this));
-		circleObjects.back().init(60, 0.1f, 0.5f, 0.5f, 100);*/
+		// Compute orbital velocity
+		double distance = sqrt(0.25);
+		double orbitalVelocity = sqrt((G * weight) / distance);
+
+		circleObjects.emplace_back(CircleObjects(this));
+		circleObjects.back().init(60, 0.05f, 0, 0, weight, 0, 0);
+
+		circleObjects.emplace_back(CircleObjects(this));
+		circleObjects.back().init(60, 0.05f, 0.25f, 0.25f, weight, -orbitalVelocity * (0.5 / distance), orbitalVelocity * (0.5 / distance));
 
 
 	}
@@ -73,22 +80,10 @@ void WindowManager::handleEvents() {
 }
 
 void WindowManager::update() {
-	float deltaTime = 0.000008f;  // Placeholder for 60 FPS (use proper time calculation) 0.016
+	float deltaTime = 0.016f;  // Placeholder for 60 FPS (use proper time calculation) 0.016
 	for (CircleObjects& circle : circleObjects) {
-		circle.update(deltaTime);
+		circle.update(deltaTime, circleObjects);
 	}
-}
-
-void WindowManager::gravitySim() {
-	int f;
-	double mass[2];
-	int i = 0;
-	for (CircleObjects& circle : circleObjects) {
-		mass[i] = circle.getMass();
-
-		i++;
-	}
-	f = (G * mass[0] * mass[1]); // / distance ^ 2 
 }
 
 void WindowManager::render() {
@@ -155,7 +150,7 @@ void WindowManager::renderCircle(int segments, float r, float centerX, float cen
 
 void WindowManager::setupTriangle() {
 
-	float verticies[] = {
+	float vertices[] = {
 		// Pos				// Color
 		0.0f, 0.5f, 0.0f,	1.0f, 0.0f, 0.0f, // Top
 		-0.5f, -0.5f, 0.0f,	0.0f, 1.0f, 0.0f, // Bottom left
@@ -212,7 +207,7 @@ void WindowManager::setupTriangle() {
 	glBindVertexArray(triangleVAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// Position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // x, y, z ; 6*sizeof becouse I have 6 floats (3 for position and 3 for color)
