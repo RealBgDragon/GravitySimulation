@@ -8,7 +8,7 @@ WindowManager* windowManager = nullptr;
 int main(int argc, char* argv[]) {
 	windowManager = new WindowManager();
 
-	windowManager->init("Gravity Simulation", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 800, false);
+	windowManager->init("Gravity Simulation", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1000, 1000, false);
 
 	while (windowManager->running()) {
 

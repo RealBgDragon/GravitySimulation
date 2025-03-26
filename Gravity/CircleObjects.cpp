@@ -1,10 +1,10 @@
 #include "CircleObjects.h"
 
-CircleObjects::CircleObjects(WindowManager* windowManager) { 
+CircleObjects::CircleObjects(WindowManager* windowManager) {
 	this->windowManager = windowManager;
 }
 
-CircleObjects::~CircleObjects() { 
+CircleObjects::~CircleObjects() {
 
 	glDeleteVertexArrays(1, &circleVAO);
 	glDeleteBuffers(1, &circleVBO);
@@ -28,6 +28,16 @@ void CircleObjects::draw() {
 }
 
 void CircleObjects::update(float deltaTime) {
-	centerX += velocity.x * deltaTime;
-	centerY += velocity.y * deltaTime;
+	std::cout << "X: " << centerX << "Y: " << centerY << std::endl;
+
+	if (centerY < -1) {
+		centerY = -1;
+		velocity.y = -velocity.y;
+	}
+
+	velocity += acceleration * deltaTime;
+
+	centerX += velocity.x;
+	centerY += velocity.y;
+
 }

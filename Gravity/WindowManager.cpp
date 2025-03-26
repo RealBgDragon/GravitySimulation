@@ -51,10 +51,10 @@ void WindowManager::init(const char* title, int xpos, int ypos, int width, int h
 
 
 		circleObjects.emplace_back(CircleObjects(this));
-		circleObjects.back().init(60, 0.25f, 0, 0, 100);
+		circleObjects.back().init(60, 0.1f, 0, 0, 100);
 
-		circleObjects.emplace_back(CircleObjects(this));
-		circleObjects.back().init(60, 0.25f, 1.0f, 1.0f, 100);
+		/*circleObjects.emplace_back(CircleObjects(this));
+		circleObjects.back().init(60, 0.1f, 0.5f, 0.5f, 100);*/
 
 
 	}
@@ -73,18 +73,22 @@ void WindowManager::handleEvents() {
 }
 
 void WindowManager::update() {
-	float deltaTime = 0.008f;  // Placeholder for 60 FPS (use proper time calculation)
-	gravitySim(deltaTime);
+	float deltaTime = 0.000008f;  // Placeholder for 60 FPS (use proper time calculation) 0.016
 	for (CircleObjects& circle : circleObjects) {
 		circle.update(deltaTime);
 	}
 }
 
-void WindowManager::gravitySim(float deltaTime) {
-	for (CircleObjects& circleObjects : circleObjects) {  // Iterates directly over each projectile
+void WindowManager::gravitySim() {
+	int f;
+	double mass[2];
+	int i = 0;
+	for (CircleObjects& circle : circleObjects) {
+		mass[i] = circle.getMass();
 
-		circleObjects.velocity += circleObjects.acceleration * deltaTime;
+		i++;
 	}
+	f = (G * mass[0] * mass[1]); // / distance ^ 2 
 }
 
 void WindowManager::render() {
@@ -100,7 +104,7 @@ void WindowManager::render() {
 }
 
 void WindowManager::setupCircle(int segments, float r, float centerX, float centerY, GLuint& circleVAO, GLuint& circleVBO, bool initialized) {
-	
+
 	if (!initialized) {
 		glGenVertexArrays(1, &circleVAO);
 		glGenBuffers(1, &circleVBO);
@@ -213,7 +217,7 @@ void WindowManager::setupTriangle() {
 	// Position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // x, y, z ; 6*sizeof becouse I have 6 floats (3 for position and 3 for color)
 	glEnableVertexAttribArray(0);
-	
+
 	// Color attribute
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // rgb; starts from position 3
 	glEnableVertexAttribArray(1);

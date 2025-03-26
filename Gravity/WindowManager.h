@@ -11,6 +11,8 @@ class WindowManager
 {
 public:
 
+	const float G = 6.6743 * (pow(10, -11));
+
 	WindowManager();
 
 	~WindowManager();
@@ -28,7 +30,7 @@ public:
 	void setupCircle(int segments, float r, float centerX, float centerY, GLuint& circleVAO, GLuint& circleVBO, bool initialized);
 	void renderCircle(int segments, float r, float centerX, float centerY, GLuint circleVAO);
 
-	void gravitySim(float deltaTime);
+	void gravitySim();
 
 	bool running() { return isRunning; }
 
@@ -45,7 +47,7 @@ private:
 
 	GLuint triangleVAO;
 	GLuint triangleVBO;
-	
+
 	GLuint shaderProgram;
 
 	SDL_Window* window;
