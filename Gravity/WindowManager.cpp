@@ -53,15 +53,11 @@ void WindowManager::init(const char* title, int xpos, int ypos, int width, int h
 		//double weight = 8.1 * pow(10, 10); // pow 19 for the moon
 		double weight = 1e5;
 
-		// Compute orbital velocity
-		double distance = sqrt(0.25);
-		double orbitalVelocity = sqrt((G * weight) / distance);
-
 		circleObjects.emplace_back(CircleObjects(this));
 		circleObjects.back().init(60, 0.05f, 0, 0, weight, 0, 0);
 
 		circleObjects.emplace_back(CircleObjects(this));
-		circleObjects.back().init(60, 0.05f, 0.25f, 0.25f, weight, -orbitalVelocity * (0.5 / distance), orbitalVelocity * (0.5 / distance));
+		circleObjects.back().init(60, 0.05f, 0.25f, 0.25f, weight, 0, 0);
 
 
 	}
@@ -80,9 +76,11 @@ void WindowManager::handleEvents() {
 }
 
 void WindowManager::update() {
-	float deltaTime = 0.016f;  // Placeholder for 60 FPS (use proper time calculation) 0.016
-	for (CircleObjects& circle : circleObjects) {
-		circle.update(deltaTime, circleObjects);
+	float deltaTime = 0.00016f;  // Placeholder for 60 FPS (use proper time calculation) 0.016
+	if (!paused) {
+		for (CircleObjects& circle : circleObjects) {
+			circle.update(deltaTime, circleObjects);
+		}
 	}
 }
 

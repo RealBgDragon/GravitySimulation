@@ -32,6 +32,8 @@ public:
 
 	bool running() { return isRunning; }
 
+	void setPaused(bool newState) { paused = newState; }
+
 	void checkShaderCompileErrors(unsigned int shader, std::string type);
 
 private:
@@ -41,6 +43,7 @@ private:
 	std::vector<CircleObjects> circleObjects;
 
 	bool isRunning = true;
+	bool paused = false;
 
 	int width;
 	int height;
