@@ -58,6 +58,9 @@ void WindowManager::init(const char* title, int xpos, int ypos, int width, int h
 
 		circleObjects.emplace_back(CircleObjects(this));
 		circleObjects.back().init(60, 0.05f, 0.25f, 0.25f, weight, 0, 0);
+		
+		circleObjects.emplace_back(CircleObjects(this));
+		circleObjects.back().init(60, 0.05f, -0.25f, -0.25f, weight, 0, 0);
 
 
 	}

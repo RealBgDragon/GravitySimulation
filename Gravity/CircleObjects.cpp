@@ -38,10 +38,12 @@ void CircleObjects::applyGravity(CircleObjects& other) {
 
 	double distance = sqrt(distanceSquared);
 
+	//TODO Make it so it checks for future colision
 	if (distance <= r) {
 		std::cout << "Colision" << std::endl;
 		velocity = -velocity;
 		other.velocity = -other.velocity;
+		return;
 	}
 
 	glm::dvec2 forceDirection = glm::normalize(direction);
@@ -76,11 +78,6 @@ void CircleObjects::update(float deltaTime, std::vector<CircleObjects>& allObjec
 
 	for (CircleObjects& other : allObjects) {
 		if (&other != this) {
-			//if ((other.centerX + r) >= (this->centerX + r) > (other.centerX - r) /*|| (other.centerX + r) > (this->centerX - r) >= (other.centerX - r)*/) {
-			//	windowManager->setPaused(true);
-			//	std::cout << "Xa: " << this->centerX << "Xb: " << other.centerX << std::endl;
-			//	std::cout << "Colision" << std::endl;
-			//}
 			applyGravity(other);
 		}
 	}
