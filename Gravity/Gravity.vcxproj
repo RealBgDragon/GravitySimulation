@@ -131,12 +131,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CircleObjects.cpp" />
+    <ClCompile Include="DisplayManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircleObjects.h" />
+    <ClInclude Include="DisplayManager.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Simulation.h" />
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
