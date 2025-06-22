@@ -24,10 +24,12 @@ public:
 
 private:
 
+	float deltaTime = 0.016f; //Old value 0.00016f
+
 	const float G = 6.6743 * (pow(10, -11));
 	bool paused = false;
+	bool tempPaused = false;
 	SDL_Event event;
 	DisplayManager* displayManager;
 
 };
-

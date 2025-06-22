@@ -1,13 +1,18 @@
 #include "CircleObjects.h"
 
 CircleObjects::CircleObjects(Renderer* renderer) {
-	this->renderer = renderer;
+	this->renderer = renderer;	
 }
 
 CircleObjects::~CircleObjects() {
 
-	glDeleteVertexArrays(1, &circleVAO);
-	glDeleteBuffers(1, &circleVBO);
+	//! When I add a new object to the vector all of the items are deleted and moved
+	//! so the destructor runs. After the code bellow is executed the VAO and VBO start again
+	//! from 1 onwards (causing 2 obj to have the same VAO and VBO
+	//TODO Find a way to fix this issue
+	
+	/*glDeleteVertexArrays(1, &circleVAO);
+	glDeleteBuffers(1, &circleVBO);*/
 
 }
 
@@ -21,6 +26,8 @@ void CircleObjects::init(int segments, float r, float centerX, float centerY, do
 
 	velocity = glm::dvec2(xAcceleration, yAcceleration);
 
+	/*renderer->setUpCircle(segments, r, centerX, centerY, circleVAO, circleVBO, initialized);
+	initialized = true;*/
 }
 
 void CircleObjects::draw() {
@@ -39,7 +46,7 @@ void CircleObjects::applyGravity(CircleObjects& other) {
 	double distance = sqrt(distanceSquared);
 
 	//TODO Make it so it checks for future colision
-	if (distance <= r) {
+	if (distance <= r * 2) {
 		std::cout << "Colision" << std::endl;
 		velocity = -velocity;
 		other.velocity = -other.velocity;

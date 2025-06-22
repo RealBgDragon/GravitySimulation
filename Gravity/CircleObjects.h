@@ -31,6 +31,9 @@ public:
 
 	void applyGravity(CircleObjects& other);
 
+	GLuint getCircleVAO() { return circleVAO; }
+	GLuint getCircleVBO() { return circleVBO; }
+
 private:
 
 	const double G = 6.6743 * (pow(10, -11));
@@ -43,8 +46,8 @@ private:
 
 	int segments;
 	float r;
-	float centerX;
-	float centerY;
+	double centerX;
+	double centerY;
 	double mass;
 
 	bool initialized = false;

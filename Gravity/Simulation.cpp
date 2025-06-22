@@ -10,10 +10,12 @@ void Simulation::init(DisplayManager* displayManager) {
 	double weight = 1e5;
 
 	circleObjects.emplace_back(CircleObjects(displayManager->renderer));
-	circleObjects.back().init(60, 0.05f, 0, 0, weight, 0, 0);
+	//						segments, r, cX, cY, mass,   xAcc, yAcc
+	circleObjects.back().init(60, 0.05f, 0.0f, 0.0f, weight, 0, 0);
 
 	circleObjects.emplace_back(CircleObjects(displayManager->renderer));
 	circleObjects.back().init(60, 0.05f, 0.25f, 0.25f, weight, 0, 0);
+	
 }
 
 void Simulation::handleEvents() {
@@ -21,13 +23,41 @@ void Simulation::handleEvents() {
 	if (event.type == SDL_QUIT) {
 		displayManager->setRunning(false);
 	}
+	if (event.type == SDL_KEYDOWN) {
+		SDL_Keycode key = event.key.keysym.sym;
+		if (key == SDLK_l) {
+			double weight = 1e5;
+			circleObjects.emplace_back(CircleObjects(displayManager->renderer));
+			circleObjects.back().init(60, 0.05f, -0.25f, -0.25f, weight, 0, 0);
+			paused = true;
+			std::cout << "Object spawned" << std::endl;
+			std::cout << "VAO: " << circleObjects.back().getCircleVAO() << "VBO: " << circleObjects.back().getCircleVBO() << std::endl;
+			//displayManager->setRunning(false);
+		}
+		if (key == SDLK_p) {
+			paused = !paused;
+			std::cout << "Simulation paused" << std::endl;
+		}
+		if (key == SDLK_f) {
+			paused = !paused;
+			std::cout << "Simulation unpaused for a single frame" << std::endl;
+		}
+		if (key == SDLK_o) {
+			for (CircleObjects& circle : circleObjects) {
+				std::cout << "X: " << circle.getCenterX() << "Y: " << circle.getCenterY() << std::endl;
+				std::cout << "VAO: " << circle.getCircleVAO() << "VBO: " << circle.getCircleVBO() << std::endl;
+			}
+		}
+	}
 }
 
 void Simulation::update() {
-	float deltaTime = 0.00016f;
 	if (!paused) {
 		for (CircleObjects& circle : circleObjects) {
 			circle.update(deltaTime, circleObjects);
+		}
+		if (tempPaused) {
+			paused = !paused;
 		}
 	}
 }
@@ -36,8 +66,8 @@ void Simulation::render() {
 	glClearColor(0, 0, 0, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (CircleObjects& circleObjects : circleObjects) {  // Iterates directly over each projectile
-		circleObjects.draw();
+	for (CircleObjects& circle : circleObjects) {  // Iterates directly over each projectile
+		circle.draw();
 	}
 	//renderCircle(60, 0.25f, 0.0f, 0.0f);
 

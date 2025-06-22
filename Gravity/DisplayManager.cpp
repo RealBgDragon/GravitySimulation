@@ -2,7 +2,10 @@
 
 DisplayManager::DisplayManager(){}
 
-DisplayManager::~DisplayManager(){}
+DisplayManager::~DisplayManager(){
+	delete renderer;
+	renderer = nullptr;
+}
 
 void DisplayManager::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
 	this->width = width;
@@ -43,6 +46,14 @@ void DisplayManager::init(const char* title, int xpos, int ypos, int width, int 
 	}
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
+
+	std::cout << "===== Gravity Simulation Controls =====" << std::endl;
+	std::cout << " [L]  Spawn new object" << std::endl;
+	std::cout << " [P]  Pause simulation" << std::endl;
+	std::cout << " [O]  Print object coordinates" << std::endl;
+	std::cout << " [F]  Advance one frame (while paused)" << std::endl;
+	std::cout << "=======================================" << std::endl;
+
 
 	renderer->setUpShader();
 }

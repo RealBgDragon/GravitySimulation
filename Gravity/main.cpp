@@ -14,8 +14,9 @@ int main(int argc, char* argv[]) {
 	displayManager->init("Gravity Simulation", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1000, 1000, false);
 	simulation->init(displayManager);
 
-	int frameCount = 0;
+	/*int frameCount = 0;
 	int lastTime = SDL_GetTicks();
+	int maxFps = 0;*/
 
 	while (displayManager->running()) {
 
@@ -23,17 +24,17 @@ int main(int argc, char* argv[]) {
 		simulation->update();
 		simulation->render();
 
-		SDL_Delay(16); // ~60 FPS
+		SDL_Delay(16); // 16 ~60 FPS
 		
-		frameCount++;
+		/*frameCount++;
 		int currentTime = SDL_GetTicks();
-
 		if (currentTime > lastTime + 1000) {
-			std::cout << frameCount << std::endl;
+			if (maxFps < frameCount) { maxFps = frameCount; }
+			std::cout << "FPS: " << frameCount << " MAX: " << maxFps<< std::endl;
 			
 			lastTime = currentTime;
 			frameCount = 0;
-		}
+		}*/
 
 	}
 
