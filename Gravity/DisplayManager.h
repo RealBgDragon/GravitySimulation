@@ -10,9 +10,7 @@ class DisplayManager
 {
 public:
 
-	std::unique_ptr<Renderer> renderer;
-
-	//Renderer* renderer;
+	Renderer* renderer = new Renderer;
 	
 	DisplayManager();
 	
@@ -26,7 +24,9 @@ public:
 	void clean();
 	
 	bool running() { return isRunning; }
+	void setRunning(bool running) { isRunning = running; }
 
+	SDL_Window* window;
 private:
 
 	std::vector<CircleObjects> circleObjects;
@@ -36,7 +36,6 @@ private:
 	int width;
 	int height;
 
-	SDL_Window* window;
 	SDL_GLContext glContext;
 	SDL_Event event;
 };

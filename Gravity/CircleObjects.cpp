@@ -1,7 +1,7 @@
 #include "CircleObjects.h"
 
-CircleObjects::CircleObjects(WindowManager* windowManager) {
-	this->windowManager = windowManager;
+CircleObjects::CircleObjects(Renderer* renderer) {
+	this->renderer = renderer;
 }
 
 CircleObjects::~CircleObjects() {
@@ -24,9 +24,9 @@ void CircleObjects::init(int segments, float r, float centerX, float centerY, do
 }
 
 void CircleObjects::draw() {
-	windowManager->setupCircle(segments, r, centerX, centerY, circleVAO, circleVBO, initialized);
+	renderer->setUpCircle(segments, r, centerX, centerY, circleVAO, circleVBO, initialized);
 	initialized = true;
-	windowManager->renderCircle(segments, r, centerX, centerY, circleVAO);
+	renderer->renderCircle(segments, circleVAO);
 }
 
 void CircleObjects::applyGravity(CircleObjects& other) {

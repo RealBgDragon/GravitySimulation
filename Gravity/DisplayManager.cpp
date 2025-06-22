@@ -10,6 +10,10 @@ void DisplayManager::init(const char* title, int xpos, int ypos, int width, int 
 
 	int flags = 0;
 
+	/*if (fullscreen) {
+		flags = SDL_WINDOW_FULLSCREEN;
+	}*/
+
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 		std::cerr << "Failed to initialize SDL!" << std::endl;
 		return;
@@ -19,7 +23,7 @@ void DisplayManager::init(const char* title, int xpos, int ypos, int width, int 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-	window = SDL_CreateWindow(title, xpos, ypos, width, height, SDL_WINDOW_OPENGL || SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow(title, xpos, ypos, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
 	if (!window) {
 		std::cerr << "Failed to create window!" << std::endl;

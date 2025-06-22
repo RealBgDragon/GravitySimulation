@@ -21,7 +21,6 @@ void Renderer::setUpShader() {
 		vertexColor = aColor;
 	}
 )";
-
 	const char* fragmentShaderSource = R"(
 	#version 460 core
     in vec3 vertexColor;
@@ -35,19 +34,22 @@ void Renderer::setUpShader() {
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER); // vertex is the position of a point in a 2d or 3d world
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
+	checkShaderCompileErrors(vertexShader, "VERTEX");
 
-	unsigned int fragnentShader = glCreateShader(GL_FRAGMENT_SHADER); // the pixel
-	glShaderSource(fragnentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragnentShader);
+	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER); // the pixel
+	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	glCompileShader(fragmentShader);
+	checkShaderCompileErrors(fragmentShader, "FRAGMENT");
 
 	sharedProgram = glCreateProgram();
 	glAttachShader(sharedProgram, vertexShader);
-	glAttachShader(sharedProgram, fragnentShader);
+	glAttachShader(sharedProgram, fragmentShader);
 	glLinkProgram(sharedProgram);
+	checkShaderCompileErrors(sharedProgram, "PROGRAM");
 
 	// Delete shader object after linking 
 	glDeleteShader(vertexShader);
-	glDeleteShader(fragnentShader);
+	glDeleteShader(fragmentShader);
 }
 
 void Renderer::setUpCircle(int segments, float r, float centerX, float centerY, GLuint& circleVAO, GLuint& circleVBO, bool initialized) {
@@ -105,4 +107,23 @@ void Renderer::renderCircle(int segmesnts, GLuint circleVAO) {
 
 void Renderer::clean() {
 	glDeleteProgram(sharedProgram);
+}
+
+void Renderer::checkShaderCompileErrors(unsigned int shader, std::string type) {
+	int success;
+	char infoLog[1024];
+	if (type != "PROGRAM") {
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		if (!success) {
+			glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+			std::cerr << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << std::endl;
+		}
+	}
+	else {
+		glGetProgramiv(shader, GL_LINK_STATUS, &success);
+		if (!success) {
+			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+			std::cerr << "ERROR::PROGRAM_LINKING_ERROR\n" << infoLog << std::endl;
+		}
+	}
 }

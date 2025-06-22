@@ -1,6 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <iostream>
 #include <vector>
 
 class Renderer
@@ -18,6 +19,8 @@ public:
 	void renderCircle(int segments, GLuint circleVAO);
 
 	void clean();
+
+	void checkShaderCompileErrors(unsigned int shader, std::string type);
 
 private:
 

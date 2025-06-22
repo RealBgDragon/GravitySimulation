@@ -1,18 +1,18 @@
 #pragma once
-#include "WindowManager.h"
+#include "Renderer.h"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-class WindowManager;
+class Renderer;
 
 class CircleObjects
 {
 
 public:
-	CircleObjects(WindowManager* windowManager);
+	CircleObjects(Renderer* renderer);
 	~CircleObjects();
 
 	void init(int segments, float r, float centerX, float centerY, double mass, double xAcceleration, double yAcceleration);
@@ -52,7 +52,7 @@ private:
 	GLuint circleVAO;
 	GLuint circleVBO;
 
-	WindowManager* windowManager;
+	Renderer* renderer;
 
 };
 
