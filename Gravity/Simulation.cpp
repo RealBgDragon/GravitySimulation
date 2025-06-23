@@ -28,10 +28,8 @@ void Simulation::handleEvents() {
 		if (key == SDLK_l) {
 			double weight = 1e5;
 			circleObjects.emplace_back(CircleObjects(displayManager->renderer));
-			circleObjects.back().init(60, 0.05f, -0.25f, -0.25f, weight, 0, 0);
-			paused = true;
+			circleObjects.back().init(60, 0.05f, -0.25f, 0.25f, weight, 0, 0);
 			std::cout << "Object spawned" << std::endl;
-			std::cout << "VAO: " << circleObjects.back().getCircleVAO() << "VBO: " << circleObjects.back().getCircleVBO() << std::endl;
 			//displayManager->setRunning(false);
 		}
 		if (key == SDLK_p) {
@@ -48,6 +46,22 @@ void Simulation::handleEvents() {
 				std::cout << "VAO: " << circle.getCircleVAO() << "VBO: " << circle.getCircleVBO() << std::endl;
 			}
 		}
+	}
+	if (event.type == SDL_MOUSEBUTTONDOWN) {
+		int mouseX, mouseY;
+		SDL_GetMouseState(&mouseX, &mouseY);
+
+		int windowWidth, windowHeight;
+		SDL_GetWindowSize(displayManager->window, &windowWidth, &windowHeight);
+
+		float ndcX = (2.0f * mouseX) / windowWidth - 1.0f;
+		float ndcY = 1.0f - (2.0f * mouseY) / windowHeight;  // invert Y axis
+
+		double weight = 1e5;
+
+		circleObjects.emplace_back(CircleObjects(displayManager->renderer));
+		circleObjects.back().init(60, 0.05f, ndcX, ndcY, weight, 0, 0);
+		std::cout << "Object spawned at location: " << ndcX << " " << ndcY << std::endl;
 	}
 }
 
