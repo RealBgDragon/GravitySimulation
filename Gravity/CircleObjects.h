@@ -5,6 +5,7 @@
 #include <vector>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <SDL.h>
 
 class Renderer;
 
@@ -15,13 +16,17 @@ public:
 	CircleObjects(Renderer* renderer);
 	~CircleObjects();
 
-	void init(int segments, float r, float centerX, float centerY, double mass, double xAcceleration, double yAcceleration);
+	void init(unsigned int id, int segments, float r, float centerX, float centerY, double mass, double xAcceleration, double yAcceleration);
 
 	float getCenterX() { return centerX; }
 	float getCenterY() { return centerY; }
 
 	void setCenterX(float newCenterX) { centerX = newCenterX; }
 	void setCenterY(float newCenterY) { centerY = newCenterY; }
+
+	unsigned int getId() { return id; }
+
+	int getLastColisionId() { return lastColisionId; }
 
 	double getMass() { return mass; }
 
@@ -44,6 +49,7 @@ private:
 	glm::dvec2 velocity = glm::dvec2(0.0f, 0.0f);
 	glm::dvec2 acceleration = glm::dvec2(0.0f, 0.0f); // y = -9.81f for gravity
 
+	unsigned int id;
 	int segments;
 	float r;
 	double centerX;
@@ -51,6 +57,10 @@ private:
 	double mass;
 
 	bool initialized = false;
+
+	int lastColisionId = -1;
+	int lastColisionTime = 0;
+	int delay = 500;
 
 	GLuint circleVAO;
 	GLuint circleVBO;

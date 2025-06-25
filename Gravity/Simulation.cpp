@@ -7,14 +7,15 @@ Simulation::~Simulation() {}
 void Simulation::init(DisplayManager* displayManager) {
 	this->displayManager = displayManager;
 
-	double weight = 1e5;
+	//double weight = 7.34e7; // moon
+	double weight = 5.972e10; // earth
 
 	circleObjects.emplace_back(CircleObjects(displayManager->renderer));
-	//						segments, r, cX, cY, mass,   xAcc, yAcc
-	circleObjects.back().init(60, 0.05f, 0.0f, 0.0f, weight, 0, 0);
+	//						id, segments, r, cX, cY, mass,   xAcc, yAcc
+	circleObjects.back().init(0, 60, 0.05f, 0.0f, 0.0f, weight, 0, 0);
 
-	circleObjects.emplace_back(CircleObjects(displayManager->renderer));
-	circleObjects.back().init(60, 0.05f, 0.25f, 0.25f, weight, 0, 0);
+	/*circleObjects.emplace_back(CircleObjects(displayManager->renderer));
+	circleObjects.back().init(1, 60, 0.05f, 0.25f, 0.25f, weight, 0, 0);*/
 	
 }
 
@@ -26,9 +27,12 @@ void Simulation::handleEvents() {
 	if (event.type == SDL_KEYDOWN) {
 		SDL_Keycode key = event.key.keysym.sym;
 		if (key == SDLK_l) {
-			double weight = 1e5;
+			int lastId = circleObjects.back().getId();
+			double weight = 7.34e-7; // 1e5
 			circleObjects.emplace_back(CircleObjects(displayManager->renderer));
-			circleObjects.back().init(60, 0.05f, -0.25f, 0.25f, weight, 0, 0);
+			double orbitSpeed = sqrt((G * (5.972e10 + weight)) / sqrt(pow(0, 2) + pow(0.5, 2)));
+			std::cout << "Speed" << orbitSpeed << std::endl;
+			circleObjects.back().init(lastId, 60, 0.05f, 0.0f, 0.5f, weight, orbitSpeed, 0);
 			std::cout << "Object spawned" << std::endl;
 			//displayManager->setRunning(false);
 		}
@@ -59,13 +63,16 @@ void Simulation::handleEvents() {
 
 		double weight = 1e5;
 
+		int lastId = circleObjects.back().getId();
+
 		circleObjects.emplace_back(CircleObjects(displayManager->renderer));
-		circleObjects.back().init(60, 0.05f, ndcX, ndcY, weight, 0, 0);
+		circleObjects.back().init(lastId, 60, 0.05f, ndcX, ndcY, weight, 0, 0);
 		std::cout << "Object spawned at location: " << ndcX << " " << ndcY << std::endl;
+		std::cout << "Object cound: " << circleObjects.size() << std::endl;
 	}
 }
 
-void Simulation::update() {
+void Simulation::update(float deltaTime) {
 	if (!paused) {
 		for (CircleObjects& circle : circleObjects) {
 			circle.update(deltaTime, circleObjects);

@@ -16,8 +16,9 @@ CircleObjects::~CircleObjects() {
 
 }
 
-void CircleObjects::init(int segments, float r, float centerX, float centerY, double mass, double xAcceleration, double yAcceleration) {
+void CircleObjects::init(unsigned int id, int segments, float r, float centerX, float centerY, double mass, double xAcceleration, double yAcceleration) {
 
+	this->id = id;
 	this->segments = segments;
 	this->r = r;
 	this->centerX = centerX;
@@ -41,13 +42,37 @@ void CircleObjects::applyGravity(CircleObjects& other) {
 	glm::vec2 posB(other.centerX, other.centerY);
 
 	glm::vec2 direction = posB - posA;
+	
 	double distanceSquared = glm::dot(direction, direction);
 
 	double distance = sqrt(distanceSquared);
 
 	//TODO Make it so it checks for future colision
-	if (distance <= r * 2) {
-		std::cout << "Colision" << std::endl;
+	int currentTime = SDL_GetTicks();
+	if (currentTime - lastColisionTime > delay) {
+		lastColisionId = -1;
+	}
+	if (distance <= r * 2 && !(other.getLastColisionId() == id)) {
+		lastColisionId = other.getId();
+		lastColisionTime = SDL_GetTicks();
+		//std::cout << "Colision with: " << lastColisionId << std::endl;
+
+		// Push objects apart
+		float overlap = (r * 2) - distance;
+
+		// Avoid division by zero
+		if (distance != 0.0f) {
+			glm::vec2 correctionDir = glm::normalize(direction);
+			glm::vec2 correction = correctionDir * (overlap / 2.0f);
+
+			// Move each object apart
+			centerX -= correction.x;
+			centerY -= correction.y;
+
+			other.centerX += correction.x;
+			other.centerY += correction.y;
+		}
+
 		velocity = -velocity;
 		other.velocity = -other.velocity;
 		return;
@@ -93,7 +118,7 @@ void CircleObjects::update(float deltaTime, std::vector<CircleObjects>& allObjec
 
 	velocity += acceleration * (double)deltaTime;
 
-	centerX += velocity.x;
-	centerY += velocity.y;
+	centerX += velocity.x * (double)deltaTime; //? Just added * delta time
+	centerY += velocity.y * (double)deltaTime;
 
 }

@@ -16,15 +16,13 @@ public:
 
 	void handleEvents();
 
-	void update();
+	void update(float deltaTime);
 
 	void render();
 
 	std::vector<CircleObjects> circleObjects;
 
 private:
-
-	float deltaTime = 0.016f; //Old value 0.00016f
 
 	const float G = 6.6743 * (pow(10, -11));
 	bool paused = false;
