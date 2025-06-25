@@ -27,8 +27,6 @@ void CircleObjects::init(unsigned int id, int segments, float r, float centerX, 
 
 	velocity = glm::dvec2(xAcceleration, yAcceleration);
 
-	/*renderer->setUpCircle(segments, r, centerX, centerY, circleVAO, circleVBO, initialized);
-	initialized = true;*/
 }
 
 void CircleObjects::draw() {
@@ -52,8 +50,8 @@ void CircleObjects::applyGravity(CircleObjects& other) {
 	if (currentTime - lastColisionTime > delay) {
 		lastColisionId = -1;
 	}
-	if (distance <= r * 2 && !(other.getLastColisionId() == id)) {
-		lastColisionId = other.getId();
+	if (distance <= r * 2 && !(other.lastColisionId == id)) {
+		lastColisionId = other.id;
 		lastColisionTime = SDL_GetTicks();
 		//std::cout << "Colision with: " << lastColisionId << std::endl;
 
@@ -66,11 +64,22 @@ void CircleObjects::applyGravity(CircleObjects& other) {
 			glm::vec2 correction = correctionDir * (overlap / 2.0f);
 
 			// Move each object apart
-			centerX -= correction.x;
-			centerY -= correction.y;
+			if (abs(other.mass - mass) < 1e10) {
+				centerX -= correction.x;
+				centerY -= correction.y;
 
-			other.centerX += correction.x;
-			other.centerY += correction.y;
+				other.centerX += correction.x;
+				other.centerY += correction.y;
+			}
+			else if (mass < other.mass) {
+				centerX -= correction.x;
+				centerY -= correction.y;
+			}
+			else {
+				other.centerX += correction.x;
+				other.centerY += correction.y;
+			}
+			
 		}
 
 		velocity = -velocity;

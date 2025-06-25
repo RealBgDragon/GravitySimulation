@@ -7,6 +7,8 @@ Simulation::~Simulation() {}
 void Simulation::init(DisplayManager* displayManager) {
 	this->displayManager = displayManager;
 
+	Camera camera(glm::vec3(0.0f, 0.0f, 10.0f)); // Start a bit away from origin
+
 	//double weight = 7.34e7; // moon
 	double weight = 5.972e10; // earth
 
@@ -25,6 +27,21 @@ void Simulation::handleEvents() {
 		displayManager->setRunning(false);
 	}
 	if (event.type == SDL_KEYDOWN) {
+		const float cameraSpeed = 0.1f;
+		switch (event.key.keysym.sym) {
+		case SDLK_w:
+			camera.move(glm::vec3(0.0f, 0.0f, -cameraSpeed)); break;
+		case SDLK_s:
+			camera.move(glm::vec3(0.0f, 0.0f, cameraSpeed)); break;
+		case SDLK_a:
+			camera.move(glm::vec3(-cameraSpeed, 0.0f, 0.0f)); break;
+		case SDLK_d:
+			camera.move(glm::vec3(cameraSpeed, 0.0f, 0.0f)); break;
+		case SDLK_q:
+			camera.move(glm::vec3(0.0f, cameraSpeed, 0.0f)); break;
+		case SDLK_e:
+			camera.move(glm::vec3(0.0f, -cameraSpeed, 0.0f)); break;
+		}
 		SDL_Keycode key = event.key.keysym.sym;
 		if (key == SDLK_l) {
 			int lastId = circleObjects.back().getId();
@@ -42,6 +59,7 @@ void Simulation::handleEvents() {
 		}
 		if (key == SDLK_f) {
 			paused = !paused;
+			tempPaused = true;
 			std::cout << "Simulation unpaused for a single frame" << std::endl;
 		}
 		if (key == SDLK_o) {
@@ -79,6 +97,7 @@ void Simulation::update(float deltaTime) {
 		}
 		if (tempPaused) {
 			paused = !paused;
+			tempPaused = false;
 		}
 	}
 }

@@ -40,6 +40,10 @@ void DisplayManager::init(const char* title, int xpos, int ypos, int width, int 
 		return;
 	}
 
+	if (SDL_GL_SetSwapInterval(0) < 0) {
+		std::cerr << "Warning: Unable to disable VSync! SDL Error: " << SDL_GetError() << std::endl;
+	}
+
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
 		std::cerr << "Failed to initialize GLAD!" << std::endl;
 		return;

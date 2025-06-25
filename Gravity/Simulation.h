@@ -3,6 +3,7 @@
 #include <vector>
 #include "CircleObjects.h"
 #include "DisplayManager.h"
+#include "Camera.h"
 
 class Simulation
 {
@@ -30,4 +31,5 @@ private:
 	SDL_Event event;
 	DisplayManager* displayManager;
 
+	Camera camera;
 };
