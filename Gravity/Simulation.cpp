@@ -27,7 +27,7 @@ void Simulation::handleEvents() {
 		displayManager->setRunning(false);
 	}
 	if (event.type == SDL_KEYDOWN) {
-		const float cameraSpeed = 0.1f;
+		const float cameraSpeed = 0.1f;/-
 		switch (event.key.keysym.sym) {
 		case SDLK_w:
 			camera.move(glm::vec3(0.0f, 0.0f, -cameraSpeed)); break;

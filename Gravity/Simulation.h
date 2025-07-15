@@ -31,5 +31,5 @@ private:
 	SDL_Event event;
 	DisplayManager* displayManager;
 
-	Camera camera;
+	//Camera camera;
 };
