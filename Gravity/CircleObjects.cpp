@@ -95,7 +95,7 @@ void CircleObjects::applyGravity(CircleObjects& other) {
 	acceleration += force / mass;
 }
 
-void CircleObjects::update(float deltaTime, std::vector<CircleObjects>& allObjects) {
+void CircleObjects::update(float deltaTime, std::vector<CircleObjects>& allObjects) { // make the function inline and check if its better
 
 	acceleration = glm::vec2(0.0f);
 
