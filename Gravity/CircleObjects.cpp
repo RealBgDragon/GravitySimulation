@@ -11,8 +11,8 @@ CircleObjects::~CircleObjects() {
 	//! from 1 onwards (causing 2 obj to have the same VAO and VBO
 	//TODO Find a way to fix this issue
 	
-	/*glDeleteVertexArrays(1, &circleVAO);
-	glDeleteBuffers(1, &circleVBO);*/
+	glDeleteVertexArrays(1, &circleVAO);
+	glDeleteBuffers(1, &circleVBO);
 
 }
 
