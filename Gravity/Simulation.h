@@ -1,6 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <vector>
+#include <memory>
 #include "CircleObjects.h"
 #include "DisplayManager.h"
 #include "Camera.h"
@@ -21,7 +22,7 @@ public:
 
 	void render();
 
-	std::vector<CircleObjects> circleObjects;
+	std::vector<std::unique_ptr<CircleObjects>> circleObjects;
 
 private:
 

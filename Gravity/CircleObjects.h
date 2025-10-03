@@ -32,9 +32,9 @@ public:
 
 	void draw();
 
-	void update(float deltaTime, std::vector<CircleObjects>& allObjects);
+	void update(float deltaTime, std::vector<std::unique_ptr<CircleObjects>>& allObjects);
 
-	void applyGravity(CircleObjects& other);
+	void applyGravity(CircleObjects* other);
 
 	GLuint getCircleVAO() { return circleVAO; }
 	GLuint getCircleVBO() { return circleVBO; }

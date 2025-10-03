@@ -35,9 +35,9 @@ void CircleObjects::draw() {
 	renderer->renderCircle(segments, circleVAO);
 }
 
-void CircleObjects::applyGravity(CircleObjects& other) {
+void CircleObjects::applyGravity(CircleObjects* other) {
 	glm::vec2 posA(centerX, centerY);
-	glm::vec2 posB(other.centerX, other.centerY);
+	glm::vec2 posB(other->centerX, other->centerY);
 
 	glm::vec2 direction = posB - posA;
 	
@@ -50,8 +50,8 @@ void CircleObjects::applyGravity(CircleObjects& other) {
 	if (currentTime - lastColisionTime > delay) {
 		lastColisionId = -1;
 	}
-	if (distance <= r * 2 && !(other.lastColisionId == id)) {
-		lastColisionId = other.id;
+	if (distance <= r * 2 && !(other->lastColisionId == id)) {
+		lastColisionId = other->id;
 		lastColisionTime = SDL_GetTicks();
 		//std::cout << "Colision with: " << lastColisionId << std::endl;
 
@@ -64,38 +64,38 @@ void CircleObjects::applyGravity(CircleObjects& other) {
 			glm::vec2 correction = correctionDir * (overlap / 2.0f);
 
 			// Move each object apart
-			if (abs(other.mass - mass) < 1e10) {
+			if (abs(other->mass - mass) < 1e10) {
 				centerX -= correction.x;
 				centerY -= correction.y;
 
-				other.centerX += correction.x;
-				other.centerY += correction.y;
+				other->centerX += correction.x;
+				other->centerY += correction.y;
 			}
-			else if (mass < other.mass) {
+			else if (mass < other->mass) {
 				centerX -= correction.x;
 				centerY -= correction.y;
 			}
 			else {
-				other.centerX += correction.x;
-				other.centerY += correction.y;
+				other->centerX += correction.x;
+				other->centerY += correction.y;
 			}
 			
 		}
 
 		velocity = -velocity;
-		other.velocity = -other.velocity;
+		other->velocity = -other->velocity;
 		return;
 	}
 
 	glm::dvec2 forceDirection = glm::normalize(direction);
 
-	double forceMagnitude = (G * mass * other.mass) / distanceSquared;
+	double forceMagnitude = (G * mass * other->mass) / distanceSquared;
 	glm::dvec2 force = forceDirection * forceMagnitude;
 
 	acceleration += force / mass;
 }
 
-void CircleObjects::update(float deltaTime, std::vector<CircleObjects>& allObjects) { // make the function inline and check if its better
+void CircleObjects::update(float deltaTime, std::vector<std::unique_ptr<CircleObjects>>& allObjects) { // make the function inline and check if its better
 
 	acceleration = glm::vec2(0.0f);
 
@@ -117,9 +117,9 @@ void CircleObjects::update(float deltaTime, std::vector<CircleObjects>& allObjec
 		velocity.x = -velocity.x;
 	}
 
-	for (CircleObjects& other : allObjects) {
-		if (&other != this) {
-			applyGravity(other);
+	for (auto& other : allObjects) {
+		if (other.get() != this) {
+			applyGravity(other.get());
 		}
 	}
 
